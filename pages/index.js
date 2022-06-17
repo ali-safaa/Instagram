@@ -6,7 +6,7 @@ const Home = () => {
   return (
     <div className="bg-gray-100">
       <Head>
-        <title>Home</title>
+        <title>Home | Page</title>
         <link rel="icon" href="/favicon.ico" />
         <link
           rel="stylesheet"

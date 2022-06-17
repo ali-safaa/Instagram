@@ -16,7 +16,7 @@ import {
 import { db } from '../firebase';
 import { useSession } from 'next-auth/react';
 import { useEffect } from 'react';
-import CommentValue from '../components/CommentValue';
+import Moment from 'react-moment';
 function PostFeed({ post }) {
   const [comment, setComment] = useState('');
   const { data: session } = useSession();
@@ -60,49 +60,70 @@ function PostFeed({ post }) {
   };
   console.log(like);
   return (
-    <div key={post.id} id={post.id} className=" w-max m-auto mt-3">
-      <div>
-        {!session ? (
-          <>
-            <div className="flex border rounded-t-md items-center py-3 pl-3 bg-white">
+    <div
+      key={post.id}
+      id={post.id}
+      className=" w-[400px] sm:w-[500px] m-auto mt-3 rounded-md bg-white"
+    >
+      <div className="flex items-center py-3 pl-3">
+        <img
+          className="w-[40px] h-[40px] object-cover rounded-full"
+          src={post.userProfile}
+          alt=""
+        />
+        <h3 className="ml-3 text-sm font-semibold flex-grow">
+          {post.userName}
+        </h3>
+        <i className="fas fa-ellipsis-v mr-4 cursor-pointer"></i>
+      </div>
+
+      <img className="w-full sm:w-[500px]" src={post.image} alt="" />
+
+      <div className="space-x-5 pt-3 pl-5 flex items-center">
+        <div className="cursor-pointer">
+          <i
+            onClick={likePost}
+            className="far fa-heart hover:scale-125 sm:text-xl cursor-pointer"
+          ></i>
+          <span className="ml-3">0</span>
+        </div>
+
+        <div className="cursor-pointer">
+          <i className="far fa-comment sm:text-xl hover:scale-125"></i>
+          <span className="ml-3">{usersComments.length}</span>
+        </div>
+
+        <div className="cursor-pointer">
+          <i className="fas fa-share sm:text-xl hover:scale-125"></i>
+          <span className="ml-3">0</span>
+        </div>
+      </div>
+
+      <div className="flex items-center pl-5 py-3 border-b">
+        <h4 className="mr-[10px] text-sm font-semibold">{post.userName} |</h4>
+        <p className="font-light">{post.userCaption}</p>
+      </div>
+
+      {session && (
+        <div className="overflow-y-scroll space-y-4 px-3 py-3 text-sm border-gray-400">
+          {usersComments.map((userComment) => (
+            <div key={userComment.id} className="flex items-center">
               <img
-                className="w-[40px] h-[40px] object-cover rounded-full"
-                src={post.userProfile}
+                className="w-[30px] h-[30px] mr-3 rounded-full object-cover"
+                src={userComment.userImage}
                 alt=""
               />
-              <h3 className="ml-3">{post.userName}</h3>
+              <h3 className="font-semibold mr-2">{userComment.userName} |</h3>
+              <p className="flex-grow">{userComment.commentSend}</p>
+              <Moment className="text-xs text-gray-400" fromNow>
+                {userComment.timestamp?.toDate()}
+              </Moment>
             </div>
-            <img className="w-[400px] sm:w-[500px]" src={post.image} alt="" />
-          </>
-        ) : (
-          <div className="space-x-5 pt-3 pl-5 flex bg-white items-center">
-            <div className="cursor-pointer">
-              <i
-                onClick={likePost}
-                className="far fa-heart hover:text-2xl sm:text-xl cursor-pointer"
-              ></i>
-              <span className="ml-3">0</span>
-            </div>
-            <div className="cursor-pointer">
-              <i className="far fa-comment sm:text-xl"></i>
-              <span className="ml-3">0</span>
-            </div>
-            <div className="cursor-pointer">
-              <i className="fas fa-share sm:text-xl"></i>
-              <span className="ml-3">0</span>
-            </div>
-          </div>
-        )}
-        <div className="flex items-center bg-white pl-5 py-3">
-          <h4 className="mr-[10px] text-sm font-semibold">{post.userName} |</h4>
-          <p className="font-light">{post.userCaption}</p>
-        </div>
-        <div>
-          {usersComments.map((userComment) => (
-            <CommentValue key={userComment} userComment={userComment} />
           ))}
         </div>
-        <div className="bg-white border-t border-gray-300 mb-3 border-b rounded-b-md flex items-center px-3 py-2">
+      )}
+      {session && (
+        <div className="py-3 flex items-center border-t">
           <input
             value={comment}
             onChange={(e) => setComment(e.target.value)}
@@ -114,12 +135,12 @@ function PostFeed({ post }) {
             onClick={sendComment}
             className={`${!comment && 'opacity-60 cursor-default'} ${
               loading && 'cursor-not-allowed text-opacity-60'
-            } text-blue-500 cursor-pointer font-semibold rounded-md text-sm py-1`}
+            } text-blue-500 cursor-pointer font-semibold rounded-md text-sm py-1 pr-3`}
           >
             {loading ? 'loading...' : 'Post'}
           </h3>
         </div>
-      </div>
+      )}
     </div>
   );
 }

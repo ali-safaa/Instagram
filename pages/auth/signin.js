@@ -1,4 +1,5 @@
 import { getProviders, signIn } from 'next-auth/react';
+import Head from 'next/head';
 
 export default function SignIn({ providers }) {
   return (
@@ -8,6 +9,14 @@ export default function SignIn({ providers }) {
           className="grid items-center justify-center mt-20"
           key={provider.name}
         >
+          <Head>
+            <title>Sign in | Page</title>
+            <link rel="icon" href="/favicon.ico" />
+            <link
+              rel="stylesheet"
+              href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"
+            />
+          </Head>
           <img
             className="w-[200px] mx-auto sm:w-[300px]"
             src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Instagram_logo.svg/840px-Instagram_logo.svg.png"

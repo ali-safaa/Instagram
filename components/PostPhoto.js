@@ -31,11 +31,7 @@ function PostPhoto({ setPostPhoto }) {
   };
 
   const onUploadPost = async () => {
-    if (loading) {
-      return;
-    }
     setLoading(true);
-
     const docRef = await addDoc(collection(db, 'posts'), {
       userName: session.user.name,
       userProfile: session.user.image,
@@ -71,13 +67,13 @@ function PostPhoto({ setPostPhoto }) {
         {selectFiles ? (
           <>
             <img
-              className="w-[300px] sm:w-[400px] h-[200px] sm:h-[300px] object-cover rounded-md"
+              className="w-[320px] sm:w-[430px] h-[200px] sm:h-[300px] object-cover rounded-md"
               src={selectFiles}
               alt=""
             />
             <div className="flex items-center">
               <input
-                className="w-full text-sm pl-3 outline-none placeholder:text-gray-500"
+                className="w-full border rounded-md py-1 text-sm pl-3 outline-none placeholder:text-gray-500"
                 type="text"
                 placeholder="Please select a caption"
                 ref={captionRef}
@@ -87,7 +83,7 @@ function PostPhoto({ setPostPhoto }) {
                 onClick={onUploadPost}
                 className={`${
                   loading && 'cursor-not-allowed bg-blue-300'
-                } bg-blue-500 rounded-md mr-2 cursor-pointer text-white text-sm px-3 font-semibold my-2 py-1`}
+                } bg-blue-500 hover:bg-black duration-300 rounded-md ml-3 cursor-pointer text-white text-sm px-3 font-semibold my-2 py-1`}
               >
                 {loading ? 'loading...' : 'Post'}
               </h3>
