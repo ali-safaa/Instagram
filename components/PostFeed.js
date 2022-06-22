@@ -1,64 +1,59 @@
 import { useState } from 'react';
 import {
   addDoc,
-  arrayRemove,
-  arrayUnion,
   collection,
   deleteDoc,
   doc,
   onSnapshot,
-  orderBy,
-  query,
-  serverTimestamp,
   setDoc,
-  updateDoc,
 } from 'firebase/firestore';
 import { db } from '../firebase';
 import { useSession } from 'next-auth/react';
 import { useEffect } from 'react';
-import Moment from 'react-moment';
+import { useRef } from 'react';
+
 function PostFeed({ post }) {
   const [comment, setComment] = useState('');
+  const [comments, setComments] = useState([]);
   const { data: session } = useSession();
   const [loading, setLoading] = useState(false);
-  const [usersComments, setUsersComments] = useState([]);
-  const [like, setLike] = useState('');
+  const [like, setLike] = useState(false);
+  const [liked, setLiked] = useState([]);
+
+  const likePost = async () => {
+    setLike(false);
+    await deleteDoc(doc(db, 'posts', post.id, 'likes', session.user.name));
+  };
+
+  const likePost2 = async () => {
+    setLike(true);
+    await setDoc(doc(db, 'posts', post.id, 'likes', session.user.name), {
+      userName: session.user.name,
+    });
+  };
+
+  useEffect(() => {
+    onSnapshot(collection(db, 'posts', post.id, 'likes'), (snapshot) => {
+      setLiked(snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+    });
+  }, []);
 
   const sendComment = async () => {
-    if (loading) return;
     setLoading(true);
-
     await addDoc(collection(db, 'posts', post.id, 'comments'), {
-      commentSend: comment,
+      comment: comment,
       userName: session.user.name,
       userImage: session.user.image,
-      timestamp: serverTimestamp(),
     });
     setLoading(false);
     setComment('');
   };
 
   useEffect(() => {
-    onSnapshot(
-      query(
-        collection(db, 'posts', post.id, 'comments'),
-        orderBy('timestamp', 'desc')
-      ),
-      (snapshot) => {
-        setUsersComments(
-          snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }))
-        );
-      }
-    );
+    onSnapshot(collection(db, 'posts', post.id, 'comments'), (snapshot) => {
+      setComments(snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+    });
   }, []);
-
-  const likePost = async () => {
-    // await addDoc(collection(db, 'posts', post.id, 'likes'), {
-    //   userName: session.user.name,
-    // });
-    await deleteDoc(doc(db, 'posts', post.id, 'likes', session.user.name));
-  };
-  console.log(like);
   return (
     <div
       key={post.id}
@@ -81,16 +76,24 @@ function PostFeed({ post }) {
 
       <div className="space-x-5 pt-3 pl-5 flex items-center">
         <div className="cursor-pointer">
-          <i
-            onClick={likePost}
-            className="far fa-heart hover:scale-125 sm:text-xl cursor-pointer"
-          ></i>
-          <span className="ml-3">0</span>
+          {like ? (
+            <i
+              onClick={likePost}
+              className={`fas fa-heart hover:scale-125 text-red-600 sm:text-xl cursor-pointer`}
+            ></i>
+          ) : (
+            <i
+              onClick={likePost2}
+              className="far fa-heart hover:scale-125 sm:text-xl cursor-pointer"
+            ></i>
+          )}
+          {liked.length > 0 && <span className="ml-2"> {liked.length} </span>}
         </div>
-
         <div className="cursor-pointer">
           <i className="far fa-comment sm:text-xl hover:scale-125"></i>
-          <span className="ml-3">{usersComments.length}</span>
+          {comments.length > 0 && (
+            <span className="ml-3">{comments.length}</span>
+          )}
         </div>
 
         <div className="cursor-pointer">
@@ -106,18 +109,15 @@ function PostFeed({ post }) {
 
       {session && (
         <div className="overflow-y-scroll space-y-4 px-3 py-3 text-sm border-gray-400">
-          {usersComments.map((userComment) => (
-            <div key={userComment.id} className="flex items-center">
+          {comments.map((comment) => (
+            <div key={comment.id} className="flex items-center">
               <img
                 className="w-[30px] h-[30px] mr-3 rounded-full object-cover"
-                src={userComment.userImage}
+                src={comment.userImage}
                 alt=""
               />
-              <h3 className="font-semibold mr-2">{userComment.userName} |</h3>
-              <p className="flex-grow">{userComment.commentSend}</p>
-              <Moment className="text-xs text-gray-400" fromNow>
-                {userComment.timestamp?.toDate()}
-              </Moment>
+              <h3 className="font-semibold mr-2">{comment.userName} |</h3>
+              <p className="flex-grow">{comment.comment}</p>
             </div>
           ))}
         </div>
