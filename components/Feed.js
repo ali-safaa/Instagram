@@ -3,10 +3,8 @@ import StoryFeed from '../components/StoryFeed';
 import PostFeed from '../components/PostFeed';
 import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
 import { db } from '../firebase';
-
 function Feed() {
   const [posts, setPosts] = useState([]);
-
   useEffect(() => {
     const unsubscribe = onSnapshot(
       query(collection(db, 'posts'), orderBy('timestamp', 'desc')),

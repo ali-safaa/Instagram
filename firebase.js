@@ -1,6 +1,7 @@
 import { initializeApp, getApp, getApps } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
+import { getAuth } from 'firebase/auth';
 const firebaseConfig = {
   apiKey: 'AIzaSyBIGCFxyn8IsBTeVi_LZfMHPtw0Sbj7fjw',
   authDomain: 'instagram-clone-94efe.firebaseapp.com',
@@ -11,7 +12,8 @@ const firebaseConfig = {
 };
 
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
+const auth = getAuth(app);
 const db = getFirestore();
 const storage = getStorage();
 
-export { app, db, storage };
+export { app, db, storage, auth };

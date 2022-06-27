@@ -1,7 +1,8 @@
 import { getSession } from 'next-auth/react';
 import Head from 'next/head';
 import Feed from '../components/Feed';
-import Header from '../components/Header';
+import ContextApi from '../components/ContextApi';
+
 const Home = () => {
   return (
     <div className="bg-gray-100">
@@ -13,7 +14,7 @@ const Home = () => {
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"
         />
       </Head>
-      <Header />
+
       <Feed />
     </div>
   );
