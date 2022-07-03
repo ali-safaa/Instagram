@@ -1,9 +1,25 @@
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { getSession } from 'next-auth/react';
 import Head from 'next/head';
+import { useEffect } from 'react';
+// import { useDispatch } from 'react-redux';
 import Feed from '../components/Feed';
-import ContextApi from '../components/ContextApi';
-
+// import { setUser } from '../slices';
 const Home = () => {
+  const auth = getAuth();
+  // const dispatch = useDispatch();
+
+  // useEffect(() => {
+  //   onAuthStateChanged(auth, (userAuth) => {
+  //     console.log('this is the user >>>', userAuth);
+
+  //     if (userAuth) {
+  //       dispatch(setUser(userAuth));
+  //     } else {
+  //       dispatch(setUser(null));
+  //     }
+  //   });
+  // }, []);
   return (
     <div className="bg-gray-100">
       <Head>
@@ -14,7 +30,6 @@ const Home = () => {
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"
         />
       </Head>
-
       <Feed />
     </div>
   );

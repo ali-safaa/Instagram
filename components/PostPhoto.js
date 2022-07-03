@@ -55,7 +55,7 @@ function PostPhoto({ setPostPhoto }) {
   };
 
   return (
-    <div className="fixed bg-opacity-50 top-0 bg-black w-screen h-screen">
+    <div className="fixed top-0 bg-opacity-70 bg-black w-screen h-screen">
       <i
         onClick={() => setPostPhoto(false)}
         className="fas fa-close justify-end flex items-center cursor-pointer mt-3 mr-5 text-2xl text-white"

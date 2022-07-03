@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import StoryFeed from '../components/StoryFeed';
 import PostFeed from '../components/PostFeed';
 import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
 import { db } from '../firebase';
@@ -18,7 +17,6 @@ function Feed() {
   }, []);
   return (
     <div>
-      <StoryFeed />
       {posts.map((post) => (
         <PostFeed key={post.id} post={post} />
       ))}

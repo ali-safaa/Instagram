@@ -2,26 +2,31 @@ import { useRouter } from 'next/router';
 import React from 'react';
 import { useState } from 'react';
 import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth';
-import { app } from '../firebase';
-import Link from 'next/link';
-import { signIn } from 'next-auth/react';
 
 import Head from 'next/head';
+import { signIn } from 'next-auth/react';
 function SignUp() {
-  const [username, setUsername] = useState('');
-  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [repeatPassword, setRepeatPassword] = useState('');
   const [error, setError] = useState('');
   const router = useRouter();
+  const inValid = email === '' || password === '';
 
-  const inValid =
-    name === '' ||
-    (username === '' && email === '') ||
-    (password === '' && repeatPassword === '');
-
-  const signUp = () => {};
+  const signUpProvider = (e) => {
+    e.preventDefault();
+    const auth = getAuth();
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((auth) => {
+        if (auth) {
+          router.push('/auth/signin');
+        }
+      })
+      .catch((error) => {
+        setError('sorry this email is taken try another', error.message);
+        setEmail('');
+        setPassword('');
+      });
+  };
   return (
     <div>
       <Head>
@@ -32,31 +37,12 @@ function SignUp() {
         src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Instagram_logo.svg/840px-Instagram_logo.svg.png"
         alt=""
       />
-      {error && (
-        <p className="text-red-500 text-center">{`!sorry you dont have acount (${error})`}</p>
-      )}
+      <p className="text-center text-red-500">{error}</p>
       <form
-        onSubmit={signUp}
+        onSubmit={signUpProvider}
         className="grid items-center justify-center space-y-3 mt-3"
         method="POST"
       >
-        <input
-          className="text-sm pl-3 outline-none w-[200px] bg-gray-100 py-2 rounded-md sm:w-[250px]"
-          value={name}
-          type="text"
-          name="name"
-          placeholder="Type your full name"
-          onChange={(e) => setName(e.target.value)}
-        />
-        <input
-          className="text-sm pl-3 outline-none w-[200px] bg-gray-100 py-2 rounded-md sm:w-[250px]"
-          value={username}
-          type="text"
-          name="username"
-          placeholder="Type your username"
-          onChange={(e) => setUsername(e.target.value)}
-        />
-
         <input
           className="text-sm pl-3 outline-none w-[200px] bg-gray-100 py-2 rounded-md sm:w-[250px]"
           value={email}
@@ -73,14 +59,7 @@ function SignUp() {
           placeholder="Type your password"
           onChange={(e) => setPassword(e.target.value)}
         />
-        <input
-          className="text-sm pl-3 sm:w-[250px] w-[200px] outline-none bg-gray-100 py-2 rounded-md"
-          value={repeatPassword}
-          type="password"
-          name="repeatPassword"
-          placeholder="repeat your password"
-          onChange={(e) => setRepeatPassword(e.target.value)}
-        />
+
         <button
           className={`${
             inValid && 'opacity-60 cursor-default'
@@ -91,12 +70,11 @@ function SignUp() {
           Sign up
         </button>
         <h3 className="text-center">
-          You have already account
+          You have already account{' '}
           <span
             onClick={() => signIn()}
             className="cursor-pointer text-blue-400"
           >
-            {' '}
             login
           </span>
         </h3>

@@ -58,7 +58,7 @@ function PostFeed({ post }) {
     <div
       key={post.id}
       id={post.id}
-      className=" w-[400px] sm:w-[500px] m-auto mt-3 rounded-md bg-white"
+      className=" w-[400px] bg-white sm:w-[500px] m-auto mt-3 rounded-md"
     >
       <div className="flex items-center py-3 pl-3">
         <img
@@ -102,28 +102,26 @@ function PostFeed({ post }) {
         </div>
       </div>
 
-      <div className="flex items-center pl-5 py-3 border-b">
+      <div className="flex items-center pl-5 py-3">
         <h4 className="mr-[10px] text-sm font-semibold">{post.userName} |</h4>
         <p className="font-light">{post.userCaption}</p>
       </div>
 
+      <div className="space-y-5 px-5 overflow-y-auto w-full border-t">
+        {comments.map((comment) => (
+          <div key={comment.id} className="text-sm flex items-center">
+            <img
+              className="w-[30px] h-[30px] mr-3 rounded-full object-cover"
+              src={comment.userImage}
+              alt=""
+            />
+            <h3 className="font-semibold mr-2">{comment.userName} |</h3>
+            <p>{comment.comment}</p>
+          </div>
+        ))}
+      </div>
       {session && (
-        <div className="overflow-y-scroll space-y-4 px-3 py-3 text-sm border-gray-400">
-          {comments.map((comment) => (
-            <div key={comment.id} className="flex items-center">
-              <img
-                className="w-[30px] h-[30px] mr-3 rounded-full object-cover"
-                src={comment.userImage}
-                alt=""
-              />
-              <h3 className="font-semibold mr-2">{comment.userName} |</h3>
-              <p className="flex-grow">{comment.comment}</p>
-            </div>
-          ))}
-        </div>
-      )}
-      {session && (
-        <div className="py-3 flex items-center border-t">
+        <form className="py-3 flex items-center border-t">
           <input
             value={comment}
             onChange={(e) => setComment(e.target.value)}
@@ -131,15 +129,16 @@ function PostFeed({ post }) {
             type="text"
             placeholder="Type a comment"
           />
-          <h3
+          <button
+            type="submit"
             onClick={sendComment}
-            className={`${!comment && 'opacity-60 cursor-default'} ${
+            className={`${!comment && 'text-blue-300 cursor-default'} ${
               loading && 'cursor-not-allowed text-opacity-60'
             } text-blue-500 cursor-pointer font-semibold rounded-md text-sm py-1 pr-3`}
           >
             {loading ? 'loading...' : 'Post'}
-          </h3>
-        </div>
+          </button>
+        </form>
       )}
     </div>
   );

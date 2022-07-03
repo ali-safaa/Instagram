@@ -8,8 +8,9 @@ function Header() {
   const [postPhoto, setPostPhoto] = useState(false);
   const { data: session } = useSession();
   const [profile, setProfile] = useState(false);
+
   return (
-    <header className="flex bg-white items-center justify-around py-3 border-b">
+    <header className="flex items-center py-3 justify-around shadow-md">
       <Link href={'/'}>
         <img
           className="w-[120px] cursor-pointer"

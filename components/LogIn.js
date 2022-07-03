@@ -11,23 +11,24 @@ function LogIn() {
   const [error, setError] = useState('');
   const router = useRouter();
 
-  const inValid = password === '' || email === '';
-  const signIn = (e) => {
+  const logIn = (e) => {
     e.preventDefault();
-    const auth = getAuth(app);
-    signInWithEmailAndPassword(auth, email, password).catch((error) => {
-      setError(error.message);
-    });
-    setEmail('');
-    setPassword('');
+    const auth = getAuth();
+    signInWithEmailAndPassword(auth, email, password)
+      .then((auth) => {
+        router.push('/');
+      })
+      .catch((error) => {
+        setError('sorry your email and password not currect', error.message);
+        setEmail('');
+        setPassword('');
+      });
   };
   return (
     <div>
-      {error && (
-        <p className="text-red-500 text-center">{`!sorry you dont have acount (${error})`}</p>
-      )}
+      <p>{error}</p>
       <form
-        onSubmit={signIn}
+        onSubmit={logIn}
         className="grid items-center justify-center space-y-3 mt-3"
         method="POST"
       >
@@ -48,10 +49,7 @@ function LogIn() {
           onChange={(e) => setPassword(e.target.value)}
         />
         <button
-          className={`${
-            inValid && 'opacity-60 cursor-default'
-          } bg-blue-500 py-1 text-sm hover:bg-black cursor-pointer duration-300 text-white font-semibold w-max mx-auto px-7 rounded-md`}
-          disabled={inValid}
+          className={`bg-blue-500 py-1 text-sm hover:bg-black cursor-pointer duration-300 text-white font-semibold w-max mx-auto px-7 rounded-md`}
           type="submit"
         >
           Login
