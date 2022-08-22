@@ -2,7 +2,6 @@ import { useRouter } from 'next/router';
 import React from 'react';
 import { useState } from 'react';
 import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth';
-
 import Head from 'next/head';
 import { signIn } from 'next-auth/react';
 function SignUp() {
@@ -15,17 +14,10 @@ function SignUp() {
   const signUpProvider = (e) => {
     e.preventDefault();
     const auth = getAuth();
-    createUserWithEmailAndPassword(auth, email, password)
-      .then((auth) => {
-        if (auth) {
-          router.push('/auth/signin');
-        }
-      })
-      .catch((error) => {
-        setError('sorry this email is taken try another', error.message);
-        setEmail('');
-        setPassword('');
-      });
+    createUserWithEmailAndPassword(auth, email, password);
+    router.push(signIn());
+    setEmail('');
+    setPassword('');
   };
   return (
     <div>

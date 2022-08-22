@@ -1,6 +1,6 @@
 import { getProviders, signIn } from 'next-auth/react';
 import Head from 'next/head';
-import LogIn from '../../components/LogIn';
+import LogIn from '../components/LogIn';
 export default function SignIn({ providers }) {
   return (
     <div className="grid items-center mt-10">

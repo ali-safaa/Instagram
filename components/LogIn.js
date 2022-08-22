@@ -2,36 +2,52 @@ import { useRouter } from 'next/router';
 import React from 'react';
 import { useState } from 'react';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
-import { app } from '../firebase';
 import Link from 'next/link';
-
+import { useDispatch } from 'react-redux';
+import { logIn } from '../providerSlice';
 function LogIn() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [name, setName] = useState('');
+  const dispatch = useDispatch();
+
   const router = useRouter();
 
-  const logIn = (e) => {
+  const logInProvider = (e) => {
     e.preventDefault();
     const auth = getAuth();
-    signInWithEmailAndPassword(auth, email, password)
-      .then((auth) => {
-        router.push('/');
-      })
-      .catch((error) => {
-        setError('sorry your email and password not currect', error.message);
-        setEmail('');
-        setPassword('');
-      });
+
+    signInWithEmailAndPassword(auth, email, password).then(() => {
+      dispatch(
+        logIn({
+          fullname: name,
+          email: email,
+          password: password,
+        })
+      );
+    });
+    router.push('/');
+    setName('');
+    setEmail('');
+    setPassword('');
   };
   return (
     <div>
       <p>{error}</p>
       <form
-        onSubmit={logIn}
+        onSubmit={logInProvider}
         className="grid items-center justify-center space-y-3 mt-3"
         method="POST"
       >
+        <input
+          className="text-sm pl-3 outline-none w-[200px] bg-gray-100 py-2 rounded-md sm:w-[250px]"
+          value={name}
+          type="text"
+          name="name"
+          placeholder="Type your fullName"
+          onChange={(e) => setName(e.target.value)}
+        />
         <input
           className="text-sm pl-3 outline-none bg-gray-100 py-2 rounded-md w-[250px]"
           value={email}

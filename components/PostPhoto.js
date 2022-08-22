@@ -12,6 +12,8 @@ import {
 } from 'firebase/firestore';
 import { db, storage } from '../firebase';
 import { getDownloadURL, ref, uploadString } from 'firebase/storage';
+import { useSelector } from 'react-redux';
+import { selectUser } from '../providerSlice';
 
 function PostPhoto({ setPostPhoto }) {
   const refFile = useRef(null);
@@ -19,6 +21,7 @@ function PostPhoto({ setPostPhoto }) {
   const [selectFiles, setSelectFiles] = useState(null);
   const [loading, setLoading] = useState(false);
   const { data: session } = useSession();
+  const user = useSelector(selectUser);
 
   const addPhotoToFeed = (e) => {
     const reader = new FileReader();
@@ -39,7 +42,6 @@ function PostPhoto({ setPostPhoto }) {
       userCaption: captionRef.current.value,
       timestamp: serverTimestamp(),
     });
-    console.log('new doc added to firebase db', docRef.id);
 
     const imageRef = ref(storage, `posts/${docRef.id}`);
     await uploadString(imageRef, selectFiles, 'data_url').then(

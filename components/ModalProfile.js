@@ -2,7 +2,7 @@ import React from 'react';
 
 function ModalProfile({ signOut }) {
   return (
-    <div className="fixed right-[-450px] sm:w-[700px] top-[60px] w-screen h-screen">
+    <div className="fixed sm:right-[-450px] right-[-380px] sm:w-[700px] top-[60px] w-screen h-screen">
       <div className="bg-white rounded-md border w-max border-gray-300">
         <h3 className="text-sm px-4 py-1 cursor-pointer hover:bg-gray-100">
           Your profile
